@@ -1,0 +1,62 @@
+﻿<Window x:Class="WPF_TaskManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_TaskManager"
+        mc:Ignorable="d"
+        Title="TaskManager" Height="450" Width="800" Loaded="Window_Loaded">
+    <Grid>
+        <StackPanel>
+
+            <DatePicker x:Name="ChoiceDate" FontSize="20" SelectedDate="{Binding Path = CreationDate, Source = CreationDate}" Loaded="ChoiceDate_Loaded"/>
+            <StackPanel x:Name="Tasks" Orientation="Vertical" CanVerticallyScroll="True">
+
+                <StackPanel x:Name="TasksNotCompleted" Orientation="Vertical">
+                    <DataGrid x:Name="dgTasksList" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="None">
+                        <DataGrid.Columns>
+
+                            <DataGridCheckBoxColumn Binding="{Binding Path = IsDone, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" Width="80" CanUserSort="False">
+                                <DataGridCheckBoxColumn.CellStyle>
+                                    <Style>
+                                        <EventSetter Event="CheckBox.Checked" Handler="Done_Checked"/>
+                                    </Style>
+                                </DataGridCheckBoxColumn.CellStyle>
+                            </DataGridCheckBoxColumn>
+
+                            <DataGridTextColumn Binding="{Binding Path = Text, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" Width="*"/>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+
+                <Button x:Name="AddTask" Content="+ Элемент списка" FontSize="25" Background="White" VerticalAlignment="Top" Height="50" Click="AddTask_Click"/>
+
+                <StackPanel x:Name="TasksCompleted" Orientation="Vertical">
+                    <DataGrid x:Name="dgTasksCompletedList" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="None">
+                        <DataGrid.Columns>
+
+                            <DataGridCheckBoxColumn Binding="{Binding Path = IsDone, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="False" Width="80">
+                                <DataGridCheckBoxColumn.CellStyle>
+                                    <Style>
+                                        <EventSetter Event="CheckBox.Unchecked" Handler="Done_Unchecked"/>
+                                    </Style>
+                                </DataGridCheckBoxColumn.CellStyle>
+                            </DataGridCheckBoxColumn>
+
+                            <DataGridTextColumn Binding="{Binding Path = Text, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="TextDecorations" Value="Strikethrough"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
