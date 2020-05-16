@@ -23,12 +23,10 @@ namespace WPF_TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly string PATHTasks = $"{Environment.CurrentDirectory}\\tasksDataList.json";
-        private readonly string PATHTasksCompleted = $"{Environment.CurrentDirectory}\\tasksCompletedDataList.json";
-        private BindingList<TaskModel> _tasksDataList = new BindingList<TaskModel>();
-        private BindingList<TaskModel> _tasksCompletedDataList = new BindingList<TaskModel>();
+        private Dictionary<DateTime, BindingList<TaskModel>[]> _tasksDataDictionary = new Dictionary<DateTime, BindingList<TaskModel>[]>();
+        private DateTime _selectedDate = DateTime.Today;
+        private readonly string PATHTasks = $"{Environment.CurrentDirectory}\\tasksDataDictionary.json";
         private FileIOService _fileIOService;
-        private FileIOService _fileIOService1;
         public MainWindow()
         {
             InitializeComponent();
@@ -36,12 +34,15 @@ namespace WPF_TaskManager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (!_tasksDataDictionary.ContainsKey(DateTime.Today))
+            {
+                _tasksDataDictionary.Add(DateTime.Today, new BindingList<TaskModel>[2]);
+            }
+
             _fileIOService = new FileIOService(PATHTasks);
-            _fileIOService1 = new FileIOService(PATHTasksCompleted);
             try
             {
-                _tasksDataList = _fileIOService.LoadData();
-                _tasksCompletedDataList = _fileIOService1.LoadData();
+                _tasksDataDictionary = _fileIOService.LoadData();
             }
             catch (Exception ex)
             {
@@ -49,12 +50,11 @@ namespace WPF_TaskManager
                 Close();
             }
 
+            dgTasksList.ItemsSource = _tasksDataDictionary[DateTime.Today][0];
+            dgTasksCompletedList.ItemsSource = _tasksDataDictionary[DateTime.Today][1];
 
-            dgTasksList.ItemsSource = _tasksDataList;
-            dgTasksCompletedList.ItemsSource = _tasksCompletedDataList;
-
-            _tasksDataList.ListChanged += TasksDataList_ListChanged;
-            _tasksCompletedDataList.ListChanged += TasksCompletedDataList_ListChanged;
+            _tasksDataDictionary[DateTime.Today][0].ListChanged += TasksDataList_ListChanged;
+            _tasksDataDictionary[DateTime.Today][1].ListChanged += TasksCompletedDataList_ListChanged;
         }
         private void TasksCompletedDataList_ListChanged(object sender, ListChangedEventArgs e)
         {
@@ -62,7 +62,7 @@ namespace WPF_TaskManager
             {
                 try
                 {
-                    _fileIOService1.SaveData(sender);
+                    _fileIOService.SaveData(_tasksDataDictionary);
                 }
                 catch (Exception ex)
                 {
@@ -77,7 +77,7 @@ namespace WPF_TaskManager
             {
                 try
                 {
-                    _fileIOService.SaveData(sender);
+                    _fileIOService.SaveData(_tasksDataDictionary);
                 }
                 catch (Exception ex)
                 {
@@ -90,7 +90,7 @@ namespace WPF_TaskManager
         private void AddTask_Click(object sender, RoutedEventArgs e)
         {
             TaskModel task = new TaskModel();
-            _tasksDataList.Add(task);
+            _tasksDataDictionary[_selectedDate][0].Add(task);
         }
 
         private void ChoiceDate_Loaded(object sender, RoutedEventArgs e)
@@ -98,24 +98,35 @@ namespace WPF_TaskManager
             ChoiceDate.SelectedDate = DateTime.Today;
         }
 
-        private void IsDone(object sender, PropertyChangedEventArgs e)
-        {
-            _tasksCompletedDataList.Add((TaskModel)sender);
-            _tasksDataList.Remove((TaskModel)sender);
-        }
-
         private void Done_Unchecked(object sender, RoutedEventArgs e)
         {
             DataGridCell task = (DataGridCell)sender;
-            _tasksDataList.Add((TaskModel)task.DataContext);
-            _tasksCompletedDataList.Remove((TaskModel)task.DataContext);
+            _tasksDataDictionary[_selectedDate][0].Add((TaskModel)task.DataContext);
+            _tasksDataDictionary[_selectedDate][1].Remove((TaskModel)task.DataContext);
         }
 
         private void Done_Checked(object sender, RoutedEventArgs e)
         {
             DataGridCell task = (DataGridCell)sender;
-            _tasksCompletedDataList.Add((TaskModel)task.DataContext);
-            _tasksDataList.Remove((TaskModel)task.DataContext);
+            _tasksDataDictionary[_selectedDate][1].Add((TaskModel)task.DataContext);
+            _tasksDataDictionary[_selectedDate][0].Remove((TaskModel)task.DataContext);
+        }
+
+        private void ChoiceDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _selectedDate = ChoiceDate.SelectedDate.Value;
+            BindingList<TaskModel>[] tasksArray = { new BindingList<TaskModel>(), new BindingList<TaskModel>()};
+
+            if (!_tasksDataDictionary.ContainsKey(_selectedDate))
+            {
+                _tasksDataDictionary.Add(_selectedDate, tasksArray);
+            }
+
+            dgTasksList.ItemsSource = _tasksDataDictionary[_selectedDate][0];
+            dgTasksCompletedList.ItemsSource = _tasksDataDictionary[_selectedDate][1];
+
+            _tasksDataDictionary[_selectedDate][0].ListChanged += TasksDataList_ListChanged;
+            _tasksDataDictionary[_selectedDate][1].ListChanged += TasksCompletedDataList_ListChanged;
         }
     }
 }

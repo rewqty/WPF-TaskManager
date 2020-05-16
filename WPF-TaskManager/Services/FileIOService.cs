@@ -18,18 +18,18 @@ namespace WPF_TaskManager.Services
         {
             PATH = path;
         }
-        public BindingList<TaskModel> LoadData()
+        public Dictionary<DateTime, BindingList<TaskModel>[]> LoadData()
         {
             var fileExists = File.Exists(PATH);
             if (!fileExists)
             {
                 File.CreateText(PATH).Dispose();
-                return new BindingList<TaskModel>();
+                return new Dictionary<DateTime, BindingList<TaskModel>[]>();
             }
             using (var reader = File.OpenText(PATH))
             {
                 var fileText = reader.ReadToEnd();
-                return JsonConvert.DeserializeObject<BindingList<TaskModel>>(fileText);
+                return JsonConvert.DeserializeObject<Dictionary<DateTime, BindingList<TaskModel>[]>>(fileText);
             }
         }
 

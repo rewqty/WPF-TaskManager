@@ -9,7 +9,7 @@
     <Grid>
         <StackPanel>
 
-            <DatePicker x:Name="ChoiceDate" FontSize="20" SelectedDate="{Binding Path = CreationDate, Source = CreationDate}" Loaded="ChoiceDate_Loaded"/>
+            <DatePicker x:Name="ChoiceDate" FontSize="20" Loaded="ChoiceDate_Loaded"  SelectedDateChanged="ChoiceDate_SelectedDateChanged"/>
             <StackPanel x:Name="Tasks" Orientation="Vertical" CanVerticallyScroll="True">
 
                 <StackPanel x:Name="TasksNotCompleted" Orientation="Vertical">
