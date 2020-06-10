@@ -24,7 +24,6 @@ namespace WPF_TaskManager.Services
             if (!fileExists)
             {
                 File.CreateText(PATH).Dispose();
-                return new Dictionary<DateTime, BindingList<TaskModel>[]>();
             }
             using (var reader = File.OpenText(PATH))
             {
