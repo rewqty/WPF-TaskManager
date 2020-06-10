@@ -34,20 +34,21 @@ namespace WPF_TaskManager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!_tasksDataDictionary.ContainsKey(DateTime.Today))
-            {
-                _tasksDataDictionary.Add(DateTime.Today, new BindingList<TaskModel>[2]);
-            }
-
             _fileIOService = new FileIOService(PATHTasks);
             try
             {
-                _tasksDataDictionary = _fileIOService.LoadData();
+                if (_fileIOService.LoadData() != null) _tasksDataDictionary = _fileIOService.LoadData();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 Close();
+            }
+
+            if (!_tasksDataDictionary.ContainsKey(DateTime.Today))
+            {
+                BindingList<TaskModel>[] tasksArray = { new BindingList<TaskModel>(), new BindingList<TaskModel>() };
+                _tasksDataDictionary.Add(DateTime.Today, tasksArray);
             }
 
             dgTasksList.ItemsSource = _tasksDataDictionary[DateTime.Today][0];
@@ -115,7 +116,7 @@ namespace WPF_TaskManager
         private void ChoiceDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             _selectedDate = ChoiceDate.SelectedDate.Value;
-            BindingList<TaskModel>[] tasksArray = { new BindingList<TaskModel>(), new BindingList<TaskModel>()};
+            BindingList<TaskModel>[] tasksArray = { new BindingList<TaskModel>(), new BindingList<TaskModel>() };
 
             if (!_tasksDataDictionary.ContainsKey(_selectedDate))
             {

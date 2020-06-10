@@ -9,7 +9,13 @@
     <Grid>
         <StackPanel>
 
-            <DatePicker x:Name="ChoiceDate" FontSize="20" Loaded="ChoiceDate_Loaded"  SelectedDateChanged="ChoiceDate_SelectedDateChanged"/>
+            <DatePicker x:Name="ChoiceDate" FontSize="20" Loaded="ChoiceDate_Loaded"  SelectedDateChanged="ChoiceDate_SelectedDateChanged">
+                <DatePicker.Resources>
+                    <Style TargetType="DatePickerTextBox">
+                        <Setter Property="IsReadOnly" Value="True"/>
+                    </Style>
+                </DatePicker.Resources>
+            </DatePicker>
             <StackPanel x:Name="Tasks" Orientation="Vertical" CanVerticallyScroll="True">
 
                 <StackPanel x:Name="TasksNotCompleted" Orientation="Vertical">
