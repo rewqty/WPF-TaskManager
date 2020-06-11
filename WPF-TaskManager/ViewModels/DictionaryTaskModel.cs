@@ -19,9 +19,9 @@ using WPF_TaskManager;
 
 namespace WPF_TaskManager.ViewModels
 {
-    partial class MainWindowViewModel
+    class DictionaryTaskModel
     {
-        private Dictionary<DateTime, BindingList<TaskModel>[]> _tasksDataDictionary;
+        private Dictionary<DateTime, BindingList<TaskModel>[]> _tasksDataDictionary = new Dictionary<DateTime, BindingList<TaskModel>[]>();
         public Dictionary<DateTime, BindingList<TaskModel>[]> TasksDataDictionary
         {
             get { return _tasksDataDictionary; }
@@ -33,8 +33,8 @@ namespace WPF_TaskManager.ViewModels
             }
         }
         public static DateTime SelectedDate = DateTime.Today;
-        private readonly static string PATHTasks = $"{Environment.CurrentDirectory}\\tasksDataDictionary.json";
 
+        private readonly static string PATHTasks = $"{Environment.CurrentDirectory}\\tasksDataDictionary.json";
         private readonly static FileIOService FileIOService = new FileIOService(PATHTasks);
         public void CheckFileAndDirectory()
         {
@@ -51,6 +51,7 @@ namespace WPF_TaskManager.ViewModels
                 BindingList<TaskModel>[] tasksArray = { new BindingList<TaskModel>(), new BindingList<TaskModel>() };
                 TasksDataDictionary.Add(DateTime.Today, tasksArray);
             }
+
         }
         public void Save()
         {
@@ -88,6 +89,12 @@ namespace WPF_TaskManager.ViewModels
             {
                 TasksDataDictionary.Add(SelectedDate, tasksArray);
             }
+        }
+
+        public void TaskAdd()
+        {
+            TaskModel task = new TaskModel();
+            TasksDataDictionary[SelectedDate][0].Add(task);
         }
     }
 }

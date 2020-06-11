@@ -24,7 +24,7 @@ namespace WPF_TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        MainWindowViewModel dict = new MainWindowViewModel();
+        DictionaryTaskModel dict = new DictionaryTaskModel();
         public MainWindow()
         {
             InitializeComponent();
@@ -33,9 +33,11 @@ namespace WPF_TaskManager
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             dict.CheckFileAndDirectory();
-
             dgTasksList.ItemsSource = dict.TasksDataDictionary[DateTime.Today][0];
+            dgTasksCompletedList.ItemsSource = dict.TasksDataDictionary[DateTime.Today][1];
             dict.TasksDataDictionary[DateTime.Today][0].ListChanged += TasksDataList_ListChanged;
+            dict.TasksDataDictionary[DateTime.Today][1].ListChanged += TasksDataList_ListChanged;
+
         }
         private void TasksDataList_ListChanged(object sender, ListChangedEventArgs e)
         {
@@ -47,8 +49,7 @@ namespace WPF_TaskManager
 
         private void AddTask_Click(object sender, RoutedEventArgs e)
         {
-            TaskModel task = new TaskModel();
-            dict.TasksDataDictionary[MainWindowViewModel.SelectedDate][0].Add(task);
+            dict.TaskAdd();
         }
 
         private void ChoiceDate_Loaded(object sender, RoutedEventArgs e)
@@ -69,11 +70,10 @@ namespace WPF_TaskManager
         private void ChoiceDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             dict.DateUpdate(ChoiceDate.SelectedDate.Value);
-
-            dgTasksList.ItemsSource = dict.TasksDataDictionary[MainWindowViewModel.SelectedDate][0];
-            dgTasksCompletedList.ItemsSource = dict.TasksDataDictionary[MainWindowViewModel.SelectedDate][1];
-
-            dict.TasksDataDictionary[MainWindowViewModel.SelectedDate][0].ListChanged += TasksDataList_ListChanged;
+            dict.TasksDataDictionary[DictionaryTaskModel.SelectedDate][0].ListChanged += TasksDataList_ListChanged;
+            dict.TasksDataDictionary[DictionaryTaskModel.SelectedDate][1].ListChanged += TasksDataList_ListChanged;
+            dgTasksList.ItemsSource = dict.TasksDataDictionary[DictionaryTaskModel.SelectedDate][0];
+            dgTasksCompletedList.ItemsSource = dict.TasksDataDictionary[DictionaryTaskModel.SelectedDate][1];
         }
     }
 }
