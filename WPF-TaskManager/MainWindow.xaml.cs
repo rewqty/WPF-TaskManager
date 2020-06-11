@@ -32,7 +32,7 @@ namespace WPF_TaskManager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            dict.CheckFileAndDirectory();
+            dict.Load();
             dgTasksList.ItemsSource = dict.TasksDataDictionary[DateTime.Today][0];
             dgTasksCompletedList.ItemsSource = dict.TasksDataDictionary[DateTime.Today][1];
             dict.TasksDataDictionary[DateTime.Today][0].ListChanged += TasksDataList_ListChanged;

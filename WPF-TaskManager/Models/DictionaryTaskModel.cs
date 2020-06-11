@@ -36,7 +36,7 @@ namespace WPF_TaskManager.ViewModels
 
         private readonly static string PATHTasks = $"{Environment.CurrentDirectory}\\tasksDataDictionary.json";
         private readonly static FileIOService FileIOService = new FileIOService(PATHTasks);
-        public void CheckFileAndDirectory()
+        public void Load()
         {
             try
             {
@@ -83,10 +83,9 @@ namespace WPF_TaskManager.ViewModels
         {
             SelectedDate = date;
 
-            BindingList<TaskModel>[] tasksArray = { new BindingList<TaskModel>(), new BindingList<TaskModel>() };
-
             if (!TasksDataDictionary.ContainsKey(SelectedDate))
             {
+                BindingList<TaskModel>[] tasksArray = { new BindingList<TaskModel>(), new BindingList<TaskModel>() };
                 TasksDataDictionary.Add(SelectedDate, tasksArray);
             }
         }

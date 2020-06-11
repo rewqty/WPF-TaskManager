@@ -59,8 +59,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Services\FileIOService.cs" />
-    <Compile Include="ViewModels\DictionaryTaskModel.cs" />
-    <Compile Include="ViewModels\TaskModel.cs" />
+    <Compile Include="Models\DictionaryTaskModel.cs" />
+    <Compile Include="Models\TaskModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
